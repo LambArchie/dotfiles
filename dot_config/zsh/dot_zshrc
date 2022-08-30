@@ -25,10 +25,11 @@ path+=( # After
 
 # Config
 export CLICOLOR=1
-export LSCOLORS=gxBxhxDxfxhxhxhxhxcxcx
-export VISUAL=/usr/bin/nano
-export EDITOR="$VISUAL"
-export USE_GKE_GCLOUD_AUTH_PLUGIN=True
+export LSCOLORS="gxBxhxDxfxhxhxhxhxcxcx"
+export VISUAL="/usr/bin/nano"
+export EDITOR="/usr/bin/nano"
+export ASDF_DATA_DIR="$HOME/.local/share/asdf"
+export USE_GKE_GCLOUD_AUTH_PLUGIN="True"
 
 # Shell Completion
 autoload -Uz compinit
@@ -36,11 +37,16 @@ compinit
 
 # Shell KeyBinds
 source /usr/share/fzf/shell/key-bindings.zsh
+# Home, End, Delete Keys
+bindkey "^[[H"    beginning-of-line
+bindkey "^[[F"    end-of-line
+bindkey "^[[3~"   delete-char
 # Linux Alt {Left,Right}-Arrow. To match Mac. Linux default is Ctrl not Alt
 bindkey "^[[1;3C" forward-word
 bindkey "^[[1;3D" backward-word
 
 # Shell Settings
+setopt INTERACTIVE_COMMENTS
 HISTFILE=~/.config/zsh/histfile
 HISTSIZE=5000
 SAVEHIST=10000
