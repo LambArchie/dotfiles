@@ -1,0 +1,57 @@
+# Enable Powerlevel10k instant prompt. Should stay close to the top of ~/.config/zsh/.zshrc.
+# Initialization code that may require console input (password prompts, [y/n]
+# confirmations, etc.) must go above this block; everything else may go below.
+if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]; then
+  source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
+fi
+
+# Aliases
+alias aws-auth="aws-azure-login --mode=gui --no-prompt"
+alias kgc="kubectl config current-context"
+alias kc="kubectl config use-context"
+alias vi="nvim"
+alias vim="nvim"
+alias grepr="rg"
+alias rgrep="rg"
+alias cloc="tokei"
+
+source ~/.config/zsh/linuxbrew.zsh
+
+# Path
+# path=('' $path) # Before
+path+=( # After
+  /home/archie/.local/share/spicetify
+)
+
+# Config
+export CLICOLOR=1
+export LSCOLORS=gxBxhxDxfxhxhxhxhxcxcx
+export VISUAL=/usr/bin/nano
+export EDITOR="$VISUAL"
+export USE_GKE_GCLOUD_AUTH_PLUGIN=True
+
+# Shell Completion
+autoload -Uz compinit
+compinit
+
+# Shell KeyBinds
+source /usr/share/fzf/shell/key-bindings.zsh
+# Linux Alt {Left,Right}-Arrow. To match Mac. Linux default is Ctrl not Alt
+bindkey "^[[1;3C" forward-word
+bindkey "^[[1;3D" backward-word
+
+# Shell Settings
+HISTFILE=~/.config/zsh/histfile
+HISTSIZE=5000
+SAVEHIST=10000
+setopt SHARE_HISTORY
+setopt APPEND_HISTORY
+setopt INC_APPEND_HISTORY
+setopt HIST_EXPIRE_DUPS_FIRST
+setopt HIST_REDUCE_BLANKS
+setopt HIST_IGNORE_SPACE # Don't save to history if command starts with space. Useful if must handle secrets directly
+
+# Shell Theme
+source $(brew --prefix)/opt/powerlevel10k/powerlevel10k.zsh-theme
+# To customize prompt, run `p10k configure` or edit ~/.config/zsh/.p10k.zsh.
+[[ ! -f ~/.config/zsh/.p10k.zsh ]] || source ~/.config/zsh/.p10k.zsh

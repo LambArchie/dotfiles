@@ -1,0 +1,28 @@
+[user]
+	name = Archie Lamb
+	email = git@archielamb.uk
+
+[core]
+	excludesfile = ~/.config/git/gitignore
+
+[diff]
+	tool = vscode
+
+[fetch]
+	prune = true
+	pruneTags = true
+
+[init]
+	defaultBranch = main
+
+[pull]
+	rebase = false
+
+[difftool "vscode"]
+	cmd = code --wait --diff $LOCAL $REMOTE
+
+[filter "lfs"]
+	clean = git-lfs clean -- %f
+	smudge = git-lfs smudge -- %f
+	process = git-lfs filter-process
+	required = true
