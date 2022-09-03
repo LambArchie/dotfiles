@@ -15,9 +15,11 @@ alias grepr="rg"
 alias rgrep="rg"
 alias cloc="tokei"
 
-source ~/.config/zsh/linuxbrew.zsh
-
 # Path
+# Custom
+source ~/.config/zsh/linuxbrew.zsh
+. $(brew --prefix)/opt/asdf/libexec/asdf.sh
+
 # path=('' $path) # Before
 path+=( # After
   /home/archie/.local/share/spicetify
