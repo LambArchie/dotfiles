@@ -4,7 +4,6 @@
 ASDF_PLUGINS=(
   nodejs
 )
-ASDF_DATA_DIR=$HOME/.local/share/asdf # This is added to .zshrc to make it permanent
 
 ### Install
 
@@ -56,6 +55,10 @@ sudo dnf install -y \
   darkman \
   google-chrome-stable \
   libreoffice \
+  `# System Tools` \
+  snapper \
+  python3-dnf-plugin-snapper \
+  wine-mono \
   `# CLI Tools` \
   android-tools \
   docker-compose \
@@ -69,8 +72,8 @@ sudo dnf install -y \
   powershell \
   python3-pip \
   ripgrep \
-  tokei \
   screen \
+  tokei \
   zsh \
   `# Fonts` \
   mscore-fonts-all \
@@ -134,7 +137,7 @@ wget -P "~/.config/spicetify/Extensions/" "https://raw.githubusercontent.com/3ra
 ~/.local/share/spicetify/spicetify apply
 
 # Nerd Fonts
-mkdir ~/Code
+mkdir -p ~/Code
 git clone --depth 1 --filter=blob:none --sparse git@github.com:ryanoasis/nerd-fonts ~/Code/nerd-fonts
 (cd ~/Code/nerd-fonts && \
 git sparse-checkout add patched-fonts/CascadiaCode && ./install.sh CascadiaCode && \
@@ -159,6 +162,9 @@ echo -e "\nkwriteconfig5 --file ~/.config/kwinrc --group TabBox --key LayoutName
 cp ~/.local/share/dark-mode.d/kde-global-theme.sh ~/.local/share/light-mode.d/kde-global-theme.sh
 sed -i 's/breezedark/breezetwilight/g' ~/.local/share/light-mode.d/kde-global-theme.sh
 systemctl --user enable --now darkman.service
+
+# Snapshot Setup
+sudo snapper -c root create-config /
 
 # Fix Discord Rich Presence
 mkdir -p ~/.config/user-tmpfiles.d
