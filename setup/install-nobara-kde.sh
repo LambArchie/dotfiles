@@ -105,11 +105,12 @@ brew install \
   checkov \
   chezmoi \
   gh \
+  helm \
   norwoodj/tap/helm-docs \
-  helm-docs \
   httpie \
   krew \
   kubernetes-cli \
+  kustomize \
   romkatv/powerlevel10k/powerlevel10k \
   pipx \
   python@3.10 \
