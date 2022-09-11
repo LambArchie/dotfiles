@@ -16,6 +16,7 @@ flatpak install flathub \
   com.bitwarden.desktop \
   com.spotify.Client \
   com.microsoft.Teams \
+  org.gnome.Evince \
   us.zoom.Zoom \
   `# Gaming` \
   com.discordapp.Discord \
@@ -56,6 +57,7 @@ sudo dnf install -y \
   google-chrome-stable \
   libreoffice \
   `# System Tools` \
+  kdenetwork-filesharing \
   snapper \
   python3-dnf-plugin-snapper \
   wine-mono \
@@ -163,6 +165,14 @@ echo -e "\nkwriteconfig5 --file ~/.config/kwinrc --group TabBox --key LayoutName
 cp ~/.local/share/dark-mode.d/kde-global-theme.sh ~/.local/share/light-mode.d/kde-global-theme.sh
 sed -i 's/breezedark/breezetwilight/g' ~/.local/share/light-mode.d/kde-global-theme.sh
 systemctl --user enable --now darkman.service
+
+# Allow user samba
+sudo mkdir /var/lib/samba/usershares
+sudo groupadd -r sambashare
+sudo chown root:sambashare /var/lib/samba/usershares
+sudo chmod 1770 /var/lib/samba/usershares
+sudo gpasswd sambashare -a $USER
+sudo setsebool -P samba_enable_home_dirs 1
 
 # Snapshot Setup
 sudo snapper -c root create-config /
