@@ -72,7 +72,9 @@ sudo dnf install -y \
   neovim \
   podman podman-docker \
   powershell \
+  pwgen \
   python3-pip \
+  rclone \
   ripgrep \
   screen \
   tokei \

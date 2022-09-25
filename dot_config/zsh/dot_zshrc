@@ -12,6 +12,7 @@ alias kc="kubectl config use-context"
 alias vi="nvim"
 alias vim="nvim"
 alias grepr="rg"
+alias password="pwgen -s 32 1"
 alias rgrep="rg"
 alias cloc="tokei"
 
@@ -26,11 +27,12 @@ path+=( # After
 )
 
 # Config
+export ASDF_DATA_DIR="$HOME/.local/share/asdf"
 export CLICOLOR=1
 export LSCOLORS="gxBxhxDxfxhxhxhxhxcxcx"
-export VISUAL="/usr/bin/nano"
 export EDITOR="/usr/bin/nano"
-export ASDF_DATA_DIR="$HOME/.local/share/asdf"
+export RCLONE_CONFIG_PASS="kwallet-query -f Passwords -r rclone kdewallet"
+export VISUAL="/usr/bin/nano"
 export USE_GKE_GCLOUD_AUTH_PLUGIN="True"
 
 # Shell Completion
