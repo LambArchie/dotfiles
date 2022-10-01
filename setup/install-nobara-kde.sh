@@ -1,9 +1,6 @@
 #!/bin/bash
 
 ### Variables
-ASDF_PLUGINS=(
-  nodejs
-)
 
 ### Install
 
@@ -103,7 +100,6 @@ bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/in
 
 # Install Homebrew/Linuxbrew Packages
 brew install \
-  asdf \
   argocd \
   awscli \
   azure-cli \
@@ -125,12 +121,10 @@ brew install \
   hashicorp/tap/vault \
   yq
 
-# ASDF Plugin Install
-for plugin in "${ASDF_PLUGINS[@]}"; do
-  asdf plugin add "$plugin"
-  asdf install "$plugin" latest
-  asdf global "$plugin" latest
-done
+# nvm
+export NVM_DIR="$HOME/.config/nvm"
+mkdir -p $NVM_DIR
+curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.1/install.sh | bash
 
 # Spicetify (Spotify Mod)
 curl -fsSL https://raw.githubusercontent.com/spicetify/spicetify-cli/master/install.sh | sh
