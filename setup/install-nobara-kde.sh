@@ -17,7 +17,7 @@ flatpak install flathub \
   us.zoom.Zoom \
   `# Gaming` \
   com.discordapp.Discord \
-  org.polymc.PolyMC \
+  org.prismlauncher.PrismLauncher \
   com.github._0negal.Viper `# Titanfall 2 Northstar Updater` \
   net.davidotek.pupgui2 `# ProtonUp-QT` \
   `# Programming` \
@@ -25,6 +25,7 @@ flatpak install flathub \
   com.jgraph.drawio.desktop \
   io.dbeaver.DBeaverCommunity \
   `# Utilities` \
+  com.calibre_ebook.calibre \
   com.github.tchx84.Flatseal \
   com.github.wwmm.easyeffects \
   org.openrgb.OpenRGB \
