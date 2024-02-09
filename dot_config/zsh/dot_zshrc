@@ -29,12 +29,15 @@ export EDITOR="/usr/bin/nano"
 export VISUAL="/usr/bin/nano"
 
 # Override some default paths
+export AZURE_CONFIG_DIR="$XDG_CONFIG_HOME/azure"
 export GOPATH="$HOME/Code/go"
 export K9SCONFIG="$XDG_CONFIG_HOME"/k9s
 export NODE_REPL_HISTORY="$XDG_DATA_HOME"/node_repl_history
-export NVM_DIR="$XDG_CONFIG_HOME/nvm"
 export PSQL_HISTORY="$XDG_STATE_HOME/psql_history"
 export SQLITE_HISTORY="$XDG_DATA_HOME/sqlite_history"
+
+# App-specific Environment Variables
+export FNM_COREPACK_ENABLED=true
 
 # Path
 # path=('' $path) # Before
@@ -73,5 +76,5 @@ source $XDG_CONFIG_HOME/zsh/p10k-config.zsh
 source $XDG_CONFIG_HOME/zsh-addons/fzf/shell/completion.zsh
 source $XDG_CONFIG_HOME/zsh-addons/fzf/shell/key-bindings.zsh
 
-# Load NVM
-[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+# fnm - node version manager
+eval "$(fnm env --use-on-cd)"

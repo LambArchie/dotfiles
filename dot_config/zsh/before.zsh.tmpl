@@ -2,6 +2,7 @@ export VAULT_ADDR={{ .vaultAddr | quote}}
 
 {{ if eq .chezmoi.os "darwin" -}}
 eval "$(/opt/homebrew/bin/brew shellenv)"
+FPATH="$(brew --prefix)/share/zsh/site-functions:${FPATH}"
 
 source $XDG_CONFIG_HOME/zsh-addons/iterm2-shell-integration.zsh
 
@@ -12,6 +13,14 @@ alias units="gunits"
 {{ end -}}
 
 {{ if eq .chezmoi.os "linux" -}}
+# Linux-specific keybinds
+# Ctrl+Left & Right Arrow
+bindkey "^[[1;5C" forward-word
+bindkey "^[[1;5D" backward-word
+# Alt+Left & Right Arrow
+bindkey "^[[1;3C" forward-word
+bindkey "^[[1;3D" backward-word
+
 # Linuxbrew (Not using 'brew shellenv' as want OS utils preferred)
 if [[ -d /home/linuxbrew/.linuxbrew ]]; then
   export HOMEBREW_PREFIX="/home/linuxbrew/.linuxbrew"
