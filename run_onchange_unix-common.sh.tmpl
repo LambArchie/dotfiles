@@ -9,7 +9,7 @@ mkdir -p ~/Code
 if [ ! -d ~/Code/dotfiles ]; then
   ln -s {{ .chezmoi.sourceDir }} ~/Code/dotfiles
 fi
-chmod o-rwx -R ~/Code
+chmod -R o-rwx ~/Code
 {{ end -}}
 
 # Create directories that we set in zshrc (and chezmoi doesn't manage anything in them)
@@ -18,7 +18,7 @@ mkdir -p ~/.config/nvm
 
 # Doing as by default anyone can read these directories
 # Not doing ~/.local as on Linux it's can contain stuff which is meant to be global readable
-chmod o-rwx -R ~/.config
+chmod -R o-rwx ~/.config
 
 # Install fzf
 ~/.config/zsh-addons/fzf/install --xdg --bin

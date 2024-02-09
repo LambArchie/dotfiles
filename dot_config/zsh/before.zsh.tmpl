@@ -3,7 +3,7 @@ export VAULT_ADDR={{ .vaultAddr | quote}}
 {{ if eq .chezmoi.os "darwin" -}}
 eval "$(/opt/homebrew/bin/brew shellenv)"
 
-source ~/.config/zsh-addons.iterm2_shell_integration.zsh
+source $XDG_CONFIG_HOME/zsh-addons/iterm2-shell-integration.zsh
 
 # Use some GNU utils instead of the default BSD ones
 alias find="gfind"
