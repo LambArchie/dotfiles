@@ -1,4 +1,19 @@
-{{ $email := promptString "email" "git@archielamb.uk" -}}
+{{- $email := promptString "Email" "git@archielamb.uk" -}}
+
+{{- $osid := .chezmoi.os -}}
+{{- if hasKey .chezmoi.osRelease "id" -}}
+{{-   $osid = printf "%s-%s" .chezmoi.os .chezmoi.osRelease.id -}}
+{{- end -}}
+
+{{- $hostType := promptChoice "What type of host are you on" (list "desktop" "laptop" "server") -}}
+
+{{- $ownerType := promptChoice "Who owns the machine you are on" (list "personal" "work") -}}
+
+{{- $vaultAddr := promptString "Vault Address" "" -}}
 
 [data]
     email = {{ $email | quote }}
+    osid = {{ $osid | quote }}
+    hostType = {{ $hostType | quote }}
+    ownerType = {{ $ownerType | quote }}
+    vaultAddr = {{ $vaultAddr | quote }}

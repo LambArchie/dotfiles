@@ -2,6 +2,12 @@
 
 Using [chezmoi](https://www.chezmoi.io/) to manage these files.
 
-## Setup
+## Using
 
-Enter [setup](setup/) to find the scripts I use to set up my computers.
+### Without chezmoi installed
+
+1. Run `sh -c "$(curl -fsLS get.chezmoi.io)" -- init --apply LambArchie`
+
+### With chezmoi installed
+
+1. Run `chezmoi init --apply LambArchie`

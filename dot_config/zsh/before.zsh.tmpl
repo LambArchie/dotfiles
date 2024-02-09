@@ -1,0 +1,33 @@
+export VAULT_ADDR={{ .vaultAddr | quote}}
+
+{{ if eq .chezmoi.os "darwin" -}}
+eval "$(/opt/homebrew/bin/brew shellenv)"
+
+source ~/.config/zsh-addons.iterm2_shell_integration.zsh
+
+# Use some GNU utils instead of the default BSD ones
+alias find="gfind"
+alias grep="ggrep --color=auto"
+alias units="gunits"
+{{ end -}}
+
+{{ if eq .chezmoi.os "linux" -}}
+# Linuxbrew (Not using 'brew shellenv' as want OS utils preferred)
+if [[ -d /home/linuxbrew/.linuxbrew ]]; then
+  export HOMEBREW_PREFIX="/home/linuxbrew/.linuxbrew"
+  export HOMEBREW_CELLAR="/home/linuxbrew/.linuxbrew/Cellar"
+  export HOMEBREW_REPOSITORY="/home/linuxbrew/.linuxbrew/Homebrew"
+  export MANPATH="${MANPATH}/home/linuxbrew/.linuxbrew/share/man:"
+  export INFOPATH="${INFOPATH:-}/home/linuxbrew/.linuxbrew/share/info:"
+  path+=(
+    /home/linuxbrew/.linuxbrew/bin
+    /home/linuxbrew/.linuxbrew/sbin
+  )
+fi
+{{ end -}}
+
+{{ if eq .ownerType "personal" -}}
+alias mediaformat='mnamer --episode-format "{series}/Season {season}/S{season:02}E{episode:02} {title}{extension}" --movie-format "{name} [{year}]/{name} [{year}]{extension}"'
+{{ else if eq .ownerType "work" -}}
+alias aws-auth='aws-azure-login --mode=gui --no-prompt'
+{{ end -}}

@@ -1,6 +1,7 @@
 # Setup Scripts
 
-Currently not configurable but this will change over time
+Currently not configurable but this will change over time.  
+End goal is all files in this directory will just be consumed by various chezmoi scripts.
 
 ## Info
 

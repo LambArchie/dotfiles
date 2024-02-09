@@ -3,6 +3,8 @@ export XDG_CACHE_HOME="$HOME/.cache"
 export XDG_DATA_HOME="$HOME/.local/share"
 export XDG_STATE_HOME="$HOME/.local/state"
 
+source $ZDOTDIR/before.zsh
+
 # Enable Powerlevel10k instant prompt. Should stay close to the top of ~/.config/zsh/.zshrc.
 # Initialization code that may require console input (password prompts, [y/n]
 # confirmations, etc.) must go above this block; everything else may go below.
@@ -19,7 +21,6 @@ alias grepr="rg"
 alias password="pwgen -s 32 1"
 alias rgrep="rg"
 alias cloc="tokei"
-# alias mediaformat='mnamer --episode-format "{series}/Season {season}/S{season:02}E{episode:02} {title}{extension}" --movie-format "{name} [{year}]/{name} [{year}]{extension}"'
 
 # Default Environment Variables
 export CLICOLOR=1
@@ -47,7 +48,6 @@ autoload -Uz compinit
 compinit
 
 # Shell KeyBinds
-# source /usr/share/fzf/shell/key-bindings.zsh
 # Home, End, Delete Keys
 bindkey "^[[H"    beginning-of-line
 bindkey "^[[F"    end-of-line

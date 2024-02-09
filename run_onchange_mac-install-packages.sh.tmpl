@@ -6,6 +6,11 @@ echo "Mac - Install Packages - Start"
 # Brewfile hash: {{ include "setup/mac/Brewfile" | sha256sum }}
 brew bundle --file={{ joinPath .chezmoi.sourceDir "setup/mac/Brewfile" }}
 
+{{ if eq .ownerType "work" -}}
+# Brewfile.work hash: {{ include "setup/mac/Brewfile.work" | sha256sum }}
+brew bundle --file={{ joinPath .chezmoi.sourceDir "setup/mac/Brewfile.work" }}
+{{ end -}}
+
 # Create the Applications directory if it doesn't exist
 mkdir -p ~/Applications
 
