@@ -1,3 +1,8 @@
+export XDG_CONFIG_HOME="$HOME/.config"
+export XDG_CACHE_HOME="$HOME/.cache"
+export XDG_DATA_HOME="$HOME/.local/share"
+export XDG_STATE_HOME="$HOME/.local/state"
+
 # Enable Powerlevel10k instant prompt. Should stay close to the top of ~/.config/zsh/.zshrc.
 # Initialization code that may require console input (password prompts, [y/n]
 # confirmations, etc.) must go above this block; everything else may go below.
@@ -6,7 +11,6 @@ if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]
 fi
 
 # Aliases
-alias aws-auth="aws-azure-login --mode=gui --no-prompt"
 alias kgc="kubectl config current-context"
 alias kc="kubectl config use-context"
 alias vi="nvim"
@@ -15,38 +19,39 @@ alias grepr="rg"
 alias password="pwgen -s 32 1"
 alias rgrep="rg"
 alias cloc="tokei"
+# alias mediaformat='mnamer --episode-format "{series}/Season {season}/S{season:02}E{episode:02} {title}{extension}" --movie-format "{name} [{year}]/{name} [{year}]{extension}"'
+
+# Default Environment Variables
+export CLICOLOR=1
+export LSCOLORS="gxBxhxDxfxhxhxhxhxcxcx" # For black background
+export EDITOR="/usr/bin/nano"
+export VISUAL="/usr/bin/nano"
+
+# Override some default paths
+export GOPATH="$HOME/Code/go"
+export K9SCONFIG="$XDG_CONFIG_HOME"/k9s
+export NODE_REPL_HISTORY="$XDG_DATA_HOME"/node_repl_history
+export NVM_DIR="$XDG_CONFIG_HOME/nvm"
+export PSQL_HISTORY="$XDG_STATE_HOME/psql_history"
+export SQLITE_HISTORY="$XDG_DATA_HOME/sqlite_history"
 
 # Path
-# Custom
-source ~/.config/zsh/linuxbrew.zsh
-
 # path=('' $path) # Before
-path+=( # After
-  /home/archie/.local/share/spicetify
-)
-
-# Config
-export CLICOLOR=1
-export LSCOLORS="gxBxhxDxfxhxhxhxhxcxcx"
-export EDITOR="/usr/bin/nano"
-export NVM_DIR="$HOME/.config/nvm"
-export RCLONE_CONFIG_PASS="kwallet-query -f Passwords -r rclone kdewallet"
-export VISUAL="/usr/bin/nano"
-export USE_GKE_GCLOUD_AUTH_PLUGIN="True"
+path+=(
+  $GOPATH/bin
+  ~/.local/bin
+) # After
 
 # Shell Completion
 autoload -Uz compinit
 compinit
 
 # Shell KeyBinds
-source /usr/share/fzf/shell/key-bindings.zsh
+# source /usr/share/fzf/shell/key-bindings.zsh
 # Home, End, Delete Keys
 bindkey "^[[H"    beginning-of-line
 bindkey "^[[F"    end-of-line
 bindkey "^[[3~"   delete-char
-# Linux Alt {Left,Right}-Arrow. To match Mac. Linux default is Ctrl not Alt
-bindkey "^[[1;3C" forward-word
-bindkey "^[[1;3D" backward-word
 
 # Shell Settings
 setopt INTERACTIVE_COMMENTS
@@ -61,9 +66,12 @@ setopt HIST_REDUCE_BLANKS
 setopt HIST_IGNORE_SPACE # Don't save to history if command starts with space. Useful if must handle secrets directly
 
 # Shell Theme
-source $(brew --prefix)/opt/powerlevel10k/powerlevel10k.zsh-theme
-# To customize prompt, run `p10k configure` or edit ~/.config/zsh/.p10k.zsh.
-[[ ! -f ~/.config/zsh/.p10k.zsh ]] || source ~/.config/zsh/.p10k.zsh
+source $XDG_CONFIG_HOME/zsh-addons/powerlevel10k/powerlevel10k.zsh-theme
+source $XDG_CONFIG_HOME/zsh/p10k-config.zsh
+
+# fzf
+source $XDG_CONFIG_HOME/zsh-addons/fzf/shell/completion.zsh
+source $XDG_CONFIG_HOME/zsh-addons/fzf/shell/key-bindings.zsh
 
 # Load NVM
 [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"

@@ -1,0 +1,24 @@
+{{ if or (eq .chezmoi.os "darwin") (eq .chezmoi.os "linux") -}}
+#!/usr/bin/env bash
+set -Eeuxo pipefail
+echo "Unix Based - Common - Start"
+
+# Make code directory if needed and link dotfiles to it
+mkdir -p ~/Code
+if [ ! -d ~/Code/dotfiles ]; then
+  ln -s {{ .chezmoi.sourceDir }} ~/Code/dotfiles
+fi
+
+# Create directories that we set in zshrc
+mkdir -p ~/.config ~/.local/bin ~/.local/share ~/.local/state # XDG Base Directory Specification
+mkdir -p ~/.config/nvm
+
+# Doing as by default anyone can read these directories
+# Not doing ~/.local as on Linux it's can contain stuff which is meant to be global readable
+chmod o-rwx -R ~/.config ~/Code
+
+# Install fzf
+~/.config/zsh-addons/fzf/install --xdg --bin
+
+echo "Unix Based - Common - End"
+{{ end -}}

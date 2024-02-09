@@ -1,0 +1,13 @@
+{{ if eq .chezmoi.os "darwin" -}}
+#!/usr/bin/env bash
+set -Eeuxo pipefail
+echo "Mac - Install Packages - Start"
+
+# Brewfile hash: {{ include "setup/mac/Brewfile" | sha256sum }}
+brew bundle --file={{ joinPath .chezmoi.sourceDir "setup/mac/Brewfile" }}
+
+# Create the Applications directory if it doesn't exist
+mkdir -p ~/Applications
+
+echo "Mac - Install Packages - End"
+{{ end -}}

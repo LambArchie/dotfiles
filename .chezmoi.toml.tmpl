@@ -1,0 +1,4 @@
+{{ $email := promptString "email" "git@archielamb.uk" -}}
+
+[data]
+    email = {{ $email | quote }}
