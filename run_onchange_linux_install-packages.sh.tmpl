@@ -1,0 +1,17 @@
+{{ if eq .chezmoi.os "linux" -}}
+#!/usr/bin/env bash
+set -Eeuxo pipefail
+echo "Linux - Install Packages - Start"
+
+echo "Installing fnm..."
+curl -fsSL https://fnm.vercel.app/install | bash -s -- --skip-shell
+if [[ -f ~/.local/share/fnm/fnm ]]; then
+  echo "fnm installed"
+  ln -s ~/.local/share/fnm/fnm ~/.local/bin/fnm
+  ~/.local/share/fnm/fnm install --lts
+else
+  echo "cannot find where fnm was installed - update this script"
+fi
+
+echo "Linux - Install Packages - End"
+{{ end -}}

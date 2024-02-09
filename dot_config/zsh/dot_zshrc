@@ -77,4 +77,6 @@ source $XDG_CONFIG_HOME/zsh-addons/fzf/shell/completion.zsh
 source $XDG_CONFIG_HOME/zsh-addons/fzf/shell/key-bindings.zsh
 
 # fnm - node version manager
-eval "$(fnm env --use-on-cd)"
+# being quiet as otherwise when you start a new shell within a node project
+# powerline0k complains as it outputs something when instant initialization is enabled
+eval "$(fnm env --use-on-cd --log-level quiet)"
