@@ -1,0 +1,129 @@
+{{ if eq .chezmoi.os "linux" -}}
+#!/usr/bin/env bash
+set -Eeuxo pipefail
+echo "Linux - Install Packages Dev Container - Start"
+
+{{ if eq .osid "linux-bazzite" -}}
+if [[ "$(echo -n 'Recreate Dev Container? [y/N]> ' >&2; read; echo $REPLY)" == [Yy]* ]] ; then
+    echo "Recreating Arch Dev Container..."
+    distrobox-stop --yes dev-arch || true
+    distrobox-rm --yes dev-arch || true
+fi
+
+distrobox-create --yes --pull --image "ghcr.io/ublue-os/arch-distrobox" --name "dev-arch" --volume "/:/host" || true
+
+echo "Installing Arch Packages..."
+arch_packages=(
+    # Core Tools
+    curl
+    git
+    jq
+    nano
+    yq
+    zsh
+
+    # Programming Languages
+    go
+    ruby
+    python
+    rustup # Rust Version Manager
+    # Databases
+    postgresql
+    sqlite
+    # Programming Utilities
+    clang
+    cmake
+    ninja
+    ipython
+    python-pipx
+    python-poetry
+    ruby-stdlib
+
+    # Misc
+    bash
+    ctop
+    # ffmpeg
+    git-lfs
+    github-cli
+    helm
+    htop
+    httpie
+    k9s
+    kubectl
+    neovim
+    p7zip
+    pwgen
+    ripgrep
+    rsync
+    rclone
+    screen
+    tokei # cloc alternative
+    tldr
+    tmux
+    wget
+)
+distrobox-enter dev-arch -- paru -S --needed "${arch_packages[@]}"
+
+echo "Installing Arch AUR Packages..."
+arch_aur_packages=(
+    # Programming Languages
+    dotnet-host-bin dotnet-sdk-bin
+    fnm-bin # NodeJS Version Manager
+    jdk21-jetbrains-bin
+
+    # GUI Apps
+    visual-studio-code-bin
+    datagrip # JetBrains DB
+    intellij-idea-ultimate-edition # JetBrains Java IDE
+    # pycharm-professional # JetBrains Python IDE
+    rider # JetBrains .NET IDE
+    webstorm # JetBrains JavaScript IDE
+    # windscribe-v2-bin # vpn
+
+    # Misc CLI
+    helm-docs
+    shellcheck-bin
+    units
+    xcaddy-bin
+)
+distrobox-enter dev-arch -- paru -S --needed "${arch_aur_packages[@]}"
+
+echo "Configuring Packages..."
+commands=(
+    "sudo ln -s /usr/bin/distrobox-host-exec /usr/bin/podman || true"
+    "distrobox-export --app code"
+    # "distrobox-export --app code-url-handler"
+    "distrobox-export --app nvim"
+    "distrobox-export --app datagrip"
+    "distrobox-export --app intellij-idea-ultimate-edition"
+    "distrobox-export --app rider"
+    "distrobox-export --app webstorm"
+    "distrobox-export --bin /usr/bin/gh"
+
+    "sudo chsh -s /usr/bin/zsh $USER"
+    "sudo chsh -s /usr/bin/zsh root"
+    "sudo su -l postgres -c \"initdb --locale=C.UTF-8 --encoding=UTF8 -D '/var/lib/postgres/data'\" || true"
+
+    "rustup default stable"
+    "sudo archlinux-java set java-21-jetbrains"
+
+    'mkdir -p ".config/JetBrains/DataGrip$(pacman -Q datagrip | cut -d " " -f 2 | cut -c1-6)"'
+    'mkdir -p ".config/JetBrains/IntelliJIdea$(pacman -Q intellij-idea-ultimate-edition | cut -d " " -f 2 | cut -c1-6)"'
+    'mkdir -p ".config/JetBrains/Rider$(pacman -Q rider | cut -d " " -f 2 | cut -c3-8)"'
+    'mkdir -p ".config/JetBrains/WebStorm$(pacman -Q webstorm | cut -d " " -f 2 | cut -c1-6)"'
+    'echo "/usr/lib/jvm/java-21-jetbrains" >> ".config/JetBrains/DataGrip$(pacman -Q datagrip | cut -d " " -f 2 | cut -c1-6)/datagrip.jdk"'
+    'echo "/usr/lib/jvm/java-21-jetbrains" >> ".config/JetBrains/IntelliJIdea$(pacman -Q intellij-idea-ultimate-edition | cut -d " " -f 2 | cut -c1-6)/idea.jdk"'
+    'echo "/usr/lib/jvm/java-21-jetbrains" >> ".config/JetBrains/Rider$(pacman -Q rider | cut -d " " -f 2 | cut -c3-8)/rider.jdk"'
+    'echo "/usr/lib/jvm/java-21-jetbrains" >> ".config/JetBrains/WebStorm$(pacman -Q webstorm | cut -d " " -f 2 | cut -c1-6)/webstorm.jdk"'
+)
+for command in "${commands[@]}"; do
+    distrobox-enter dev-arch -- bash -c "$command"
+done
+
+{{ else -}}
+echo "Not recognised OS, purposefully failling"
+exit 1
+{{ end -}}
+
+echo "Linux - Install Packages Dev Container - End"
+{{ end -}}

@@ -14,14 +14,17 @@ chmod -R o-rwx ~/Code
 
 # Create directories that we set in zshrc (and chezmoi doesn't manage anything in them)
 mkdir -p ~/.local/bin ~/.local/state # XDG Base Directory Specification
-mkdir -p ~/.config/nvm
-
-# Doing as by default anyone can read these directories
-# Not doing ~/.local as on Linux it's can contain stuff which is meant to be global readable
-chmod -R o-rwx ~/.config
 
 # Install fzf
 ~/.config/zsh-addons/fzf/install --xdg --bin
+
+# Potentially Manual Steps Below
+if [ ! -f ~/.ssh/id_ed25519 ]; then
+  echo "Generating SSH Key, make sure to set a passphrase"
+  ssh-keygen -t ed25519 -C "$(whoami)@$(hostname)" -f ~/.ssh/id_ed25519
+  gh config set git_protocol ssh
+  gh auth login -p ssh -h github.com
+fi
 
 echo "Unix Based - Common - End"
 {{ end -}}

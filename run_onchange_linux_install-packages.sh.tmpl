@@ -3,15 +3,46 @@
 set -Eeuxo pipefail
 echo "Linux - Install Packages - Start"
 
-echo "Installing fnm..."
-curl -fsSL https://fnm.vercel.app/install | bash -s -- --skip-shell
-if [[ -f ~/.local/share/fnm/fnm ]]; then
-  echo "fnm installed"
-  ln -s ~/.local/share/fnm/fnm ~/.local/bin/fnm
-  ~/.local/share/fnm/fnm install --lts
-else
-  echo "cannot find where fnm was installed - update this script"
-fi
+{{ if eq .osid "linux-bazzite" -}}
+echo "Installing Flatpaks..."
+flatpaks=(
+  # Browsers
+  org.mozilla.firefox
+  com.google.Chrome
+  com.microsoft.Edge
+  org.gnome.Epiphany # Gnome Web - WebKit based (Safari)
+
+  # Utilities
+  com.bitwarden.desktop
+  com.github.wwmm.easyeffects
+  org.pipewire.Helvum
+  com.github.tchx84.Flatseal
+  io.missioncenter.MissionCenter
+  org.jdownloader.JDownloader
+
+  # Media
+  com.spotify.Client
+  io.mpv.Mpv
+
+  # Development
+  com.jgraph.drawio.desktop
+  io.podman_desktop.PodmanDesktop
+
+  # Communication
+  us.zoom.Zoom
+  com.discordapp.Discord
+
+  # Games
+  io.mrarm.mcpelauncher
+  net.davidotek.pupgui2 # ProtonUp-QT
+  org.prismlauncher.PrismLauncher
+)
+flatpak install flathub "${flatpaks[@]}"
+
+{{ else -}}
+echo "Not recognised OS, purposefully failling"
+exit 1
+{{ end -}}
 
 echo "Linux - Install Packages - End"
 {{ end -}}

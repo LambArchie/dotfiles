@@ -6,7 +6,7 @@ Using [chezmoi](https://www.chezmoi.io/) to manage these files.
 
 ### Without chezmoi installed
 
-1. Run `sh -c "$(curl -fsLS get.chezmoi.io)" -- init --apply LambArchie`
+1. Run `sh -c "$(curl -fsLS get.chezmoi.io/lb)" -- init --apply LambArchie`
 
 ### With chezmoi installed
 

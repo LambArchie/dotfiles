@@ -1,0 +1,67 @@
+{{ if eq .chezmoi.os "linux" -}}
+#!/usr/bin/env bash
+set -Eeuxo pipefail
+echo "Linux - Basic Setup - Start"
+
+{{ if eq .osid "linux-bazzite" -}}
+echo "Setting up Bazzite"
+
+# Disable Default MOTD
+# Code from toggle-user-motd in /usr/share/ublue-os/just/00-default.just
+if test ! -d "${HOME}/.config"; then
+  mkdir "${HOME}/.config"
+fi
+touch "${HOME}/.config/no-show-user-motd"
+
+# Remoe unneeded files
+rm -r ~/.mozilla || true # Using flatpak version
+rm -rf /var/home/linuxbrew || true # Don't want homebrew since have arch dev container
+
+flatpak remote-delete --user flathub || true # Want all flatpaks to be system-wide
+
+## Misc Settings
+kwriteconfig6 --file ~/.config/kwinrc --group "Xwayland" --key "XwaylandEavesdrops" "None"
+kwriteconfig6 --file ~/.config/PlasmaUserFeedback --group "Global" --key "FeedbackLevel" 48 # Increases from default to Detailed system + Basic Usage
+
+## Theme
+lookandfeeltool --apply "org.kde.breezetwilight.desktop"
+kwriteconfig6 --file ~/.config/kwinrc --group "NightColor" --key "LatitudeFixed" 52
+kwriteconfig6 --file ~/.config/kwinrc --group "NightColor" --key "Mode" "Location"
+
+## Inputs
+# Keybinds - \t's & printf are intentional as command needs the tab character
+kwriteconfig6 --file ~/.config/kglobalshortcutsrc --group "kmix" --key "mic_mute" "$(printf "Microphone Mute\tMeta+Volume Mute\tLaunch (9),Microphone Mute\tMeta+Volume Mute,Mute Microphone")" # Launch (9) = F13 = Mouse Side Button
+kwriteconfig6 --file ~/.config/kglobalshortcutsrc --group "kwin" --key "Overview" "$(printf "Meta+Tab\tMeta+W,Meta+W,Toggle Overview")" # Add Win+Tab for Overview
+
+# Keyboard
+kwriteconfig6 --file ~/.config/kcminputrc --group "Keyboard" --key "NumLock" 0 # Turns on NumLock on Boot
+
+# Mouse
+kwriteconfig6 --file ~/.config/kcminputrc --group "Libinput" --group "1133" --group "49295" --group "Logitech G403 HERO Gaming Mouse" --key "PointerAccelerationProfile" "1" # Disable Pointer Acceleration
+kwriteconfig5 --file ~/.config/kcminputrc --group "Libinput" --group "1133" --group "49295" --group "Logitech G403 HERO Gaming Mouse" --key "PointerAcceleration" "0.500" # Pointer Speed (0 is default)
+kwriteconfig6 --file ~/.config/kwinrc --group "MouseBindings" --key "CommandAllWheel" "Change Opacity" # Win+Scroll changes window opacity
+
+## Application Setings
+# Dolpin/File Selector
+kwriteconfig6 --file ~/.config/kdeglobals --group "KFileDialog Settings" --key "Show hidden files" true
+kwriteconfig6 --file ~/.config/kdeglobals --group "KFileDialog Settings" --key "Sort hidden files last" true
+
+# KWin (Desktop)
+kwriteconfig6 --file ~/.config/kwinrc --group "EdgeBarrier" --key "CornerBarrier" false # No Sticky Corners
+kwriteconfig6 --file ~/.config/kwinrc --group "EdgeBarrier" --key "EdgeBarrier" 8 # Require extra 8px of movement to change screen
+
+# Taskbar Elements
+kwriteconfig6 --file ~/.config/plasma_calendar_holiday_regions --group "General" --key "selectedRegions" "gb-eaw_en-gb"
+
+# Search
+kwriteconfig6 --file ~/.config/krunnerrc --group "Plugins" --key "browserhistoryEnabled" false
+kwriteconfig6 --file ~/.config/krunnerrc --group "Plugins" --key "browsertabsEnabled" false
+kwriteconfig6 --file ~/.config/krunnerrc --group "Plugins" --key "krunner_webshortcutsEnabled" false
+
+{{ else -}}
+echo "Not recognised OS, purposefully failling"
+exit 1
+{{ end -}}
+
+echo "Linux - Basic Setup - End"
+{{ end -}}
