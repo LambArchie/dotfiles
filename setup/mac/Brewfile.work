@@ -1,6 +1,7 @@
 brew "awscli"
 brew "azure-cli"
 brew "checkov"
+brew "cloud-sql-proxy"
 brew "terraform"
 brew "terraform-docs"
 brew "terragrunt"
@@ -11,4 +12,4 @@ brew "tfsec"
 cask "google-cloud-sdk"
 
 tap "azure/kubelogin"
-brew "azure/kubelogin/az-kubelogin"
+brew "azure/kubelogin/kubelogin"

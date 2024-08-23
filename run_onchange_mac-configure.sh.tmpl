@@ -1,0 +1,17 @@
+{{ if eq .chezmoi.os "darwin" -}}
+#!/usr/bin/env bash
+set -Eeuxo pipefail
+echo "Mac - Configure - Start"
+
+# Enable Auto Dark Mode
+defaults write -g AppleInterfaceStyleSwitchesAutomatically -bool true
+
+# Standard dock icon size
+defaults write com.apple.dock tilesize -int 62
+# On hover what size the dock icons increase to
+defaults write com.apple.dock largesize -int 72
+# Apply changes
+killall Dock
+
+echo "Mac - Configure - End"
+{{ end -}}

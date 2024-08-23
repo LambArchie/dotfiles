@@ -1,33 +1,33 @@
 {
   "schemes" : [
     {
+      "pointer" : {
+        "acceleration" : 0,
+        "speed" : 0.5,
+        "disableAcceleration" : false
+      },
       "if" : {
         "device" : {
-          "vendorID" : "0x46d",
-          "category" : "mouse",
           "productName" : "G403 HERO Gaming Mouse",
-          "serialNumber" : "0282394B3837",
-          "productID" : "0xc08f"
+          "productID" : "0xc08f",
+          "category" : "mouse",
+          "vendorID" : "0x46d",
+          "serialNumber" : "0282394B3837"
         }
       },
       "scrolling" : {
         "distance" : {
           "vertical" : "auto"
         },
+        "acceleration" : {
+          "vertical" : 1
+        },
         "reverse" : {
           "vertical" : true
         },
         "speed" : {
           "vertical" : 0
-        },
-        "acceleration" : {
-          "vertical" : 1
         }
-      },
-      "pointer" : {
-        "disableAcceleration" : false,
-        "speed" : 0.5,
-        "acceleration" : 0
       }
     }
   ],

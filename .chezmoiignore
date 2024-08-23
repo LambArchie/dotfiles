@@ -1,3 +1,6 @@
 *.md
 setup/
 install.sh
+{{- if ne .chezmoi.os "darwin" }}
+Library # MacOS only path
+{{- end }}
