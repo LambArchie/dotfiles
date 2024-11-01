@@ -1,15 +1,25 @@
-brew "awscli"
-brew "azure-cli"
+# Terraform
 brew "checkov"
-brew "cloud-sql-proxy"
 brew "terraform"
 brew "terraform-docs"
 brew "terragrunt"
-brew "tfenv"
 brew "tflint"
 brew "tfsec"
 
-cask "google-cloud-sdk"
+# AWS
+brew "awscli"
+cask "session-manager-plugin" # AWS Session Manager Plugin
 
-tap "azure/kubelogin"
-brew "azure/kubelogin/kubelogin"
+# Local Docker + Kubernetes
+brew "colima"
+brew "docker"
+brew "docker-buildx"
+
+# Misc
+brew "postgis"
+cask "1password"
+cask "1password-cli"
+cask "linear-linear"
+cask "slack"
+cask "tailscale"
+mas "1Password for Safari", id: 1569813296

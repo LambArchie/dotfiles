@@ -39,7 +39,7 @@ fi
 {{ if eq .ownerType "personal" -}}
 alias mediaformat='mnamer --episode-format "{series}/Season {season}/S{season:02}E{episode:02} {title}{extension}" --movie-format "{name} [{year}]/{name} [{year}]{extension}"'
 {{ else if eq .ownerType "work" -}}
-alias aws-auth='aws-azure-login --mode=gui --no-prompt'
+# alias aws-auth='aws-azure-login --mode=gui --no-prompt'
 {{ end -}}
 
 # Enable Powerlevel10k instant prompt. Should stay close to the top of ~/.config/zsh/.zshrc.
