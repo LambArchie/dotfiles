@@ -15,11 +15,20 @@ brew "colima"
 brew "docker"
 brew "docker-buildx"
 
-# Misc
-brew "postgis"
+# GUI Apps
 cask "1password"
 cask "1password-cli"
 cask "linear-linear"
+cask "notion"
+cask "notion-calendar"
 cask "slack"
 cask "tailscale"
 mas "1Password for Safari", id: 1569813296
+
+# Programming Languages
+brew "postgis"
+brew "rbenv"
+
+# Misc
+tap "f1bonacc1/tap"
+brew "f1bonacc1/tap/process-compose"

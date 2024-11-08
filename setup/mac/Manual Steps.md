@@ -1,6 +1,7 @@
 Add custom input source + British PC
 Keyboard Control and Command swap
 Enable auto night light
+Spaces Gesture -> Change to 3 finger swipe from 4
 
 Keybinds
 
@@ -14,3 +15,5 @@ Keybinds
 - Spotify
   - Exit Full Screen Shift + Ctrl + Win + Alt + Up Arrow
   - Enter Full Screen Shift + Ctrl + Win + Alt + Up Arrow
+
+DBeaver Keybinds
