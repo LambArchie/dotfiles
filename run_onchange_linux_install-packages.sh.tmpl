@@ -39,6 +39,28 @@ flatpaks=(
 )
 flatpak install flathub "${flatpaks[@]}"
 
+echo "Layered RPM packages..."
+
+# https://windscribe.com/install/desktop/linux_rpm_x64 & https://github.com/Windscribe/Desktop-App/releases
+WINDSCRIBE_VERSION="2.13.8"
+WINDSCRIBE_HASH="0c0622edeaa93cd2478302edd430e83df1d8524f58ded9b1db114a6292ee0e22"
+if [[ "$(rpm-ostree status --json | jq -e ".deployments[0].\"requested-local-packages\" | any(. == \"windscribe-${WINDSCRIBE_VERSION}-0.x86_64\")")" == "false" ]]; then
+  echo "Installing or updating Windscribe..."
+  curl -o /tmp/windscribe_${WINDSCRIBE_VERSION}_x86_64.rpm https://deploy.totallyacdn.com/desktop-apps/$WINDSCRIBE_VERSION/windscribe_${WINDSCRIBE_VERSION}_x86_64_fedora.rpm # https://windscribe.com/install/desktop/linux_rpm_x64
+  echo "$WINDSCRIBE_HASH /tmp/windscribe_${WINDSCRIBE_VERSION}_x86_64.rpm" | sha256sum --check
+  rpm-ostree uninstall windscribe || true
+  rpm-ostree install /tmp/windscribe_${WINDSCRIBE_VERSION}_x86_64.rpm
+  rm /tmp/windscribe_${WINDSCRIBE_VERSION}_x86_64.rpm
+else
+  echo "Windscribe already installed with expected version, skipping..."
+fi
+
+echo "Configuring packages..."
+mkdir -p ~/.config/user-tmpfiles.d
+echo 'L %t/discord-ipc-0 - - - - app/com.discordapp.Discord/discord-ipc-0' > ~/.config/user-tmpfiles.d/discord-rpc.conf
+systemctl --user enable systemd-tmpfiles-setup.service
+systemctl --user start systemd-tmpfiles-setup.service
+
 {{ else -}}
 echo "Not recognised OS, purposefully failling"
 exit 1
