@@ -1,0 +1,20 @@
+[Custom Commands][net.local.busctl.desktop]
+Exec=busctl --user call org.mpris.MediaPlayer2.spotify /org/mpris/MediaPlayer2 org.mpris.MediaPlayer2.Player PlayPause
+Name=Spotify Play/Pause
+
+[Custom Commands][net.local.wpctl-2.desktop]
+Exec=wpctl set-volume "$(pw-dump | jq '.[] | select(.type=="PipeWire:Interface:Node") | select(.info.props."pipewire.access.portal.app_id"=="com.spotify.Client") | .id')" "0.05+"
+Name=Spotify Volume Up
+
+[Custom Commands][net.local.wpctl.desktop]
+Exec=wpctl set-volume "$(pw-dump | jq '.[] | select(.type=="PipeWire:Interface:Node") | select(.info.props."pipewire.access.portal.app_id"=="com.spotify.Client") | .id')" "0.05-"
+Name=Spotify Volume Down
+
+[net.local.busctl.desktop][Global Shortcuts]
+_launch=Touchpad Off
+
+[net.local.wpctl-2.desktop][Global Shortcuts]
+_launch=Touchpad On
+
+[net.local.wpctl.desktop][Global Shortcuts]
+_launch=Touchpad Toggle
