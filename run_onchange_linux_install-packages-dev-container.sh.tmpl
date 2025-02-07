@@ -31,6 +31,7 @@ arch_packages=(
     postgresql
     sqlite
     # Programming Utilities
+    actionlint
     clang
     cmake
     ninja
@@ -39,8 +40,16 @@ arch_packages=(
     python-poetry
     ruby-stdlib
 
+    # AMD GPU
+    rocm-hip-runtime
+    rocm-opencl-runtime
+
     # Misc
+    7zip
+    android-tools
     bash
+    bind # for dig
+    btop
     ctop
     # ffmpeg
     git-lfs
@@ -48,11 +57,14 @@ arch_packages=(
     helm
     htop
     httpie
+    imagemagick
     k9s
     kubectl
+    mediainfo
     neovim
-    p7zip
+    opentofu
     pwgen
+    qpdf
     ripgrep
     rsync
     rclone
@@ -61,6 +73,8 @@ arch_packages=(
     tldr
     tmux
     wget
+    wlroots # clipboard https://github.com/89luca89/distrobox/blob/main/docs/useful_tips.md#copy-text-to-host-clipboard
+    xsel # clipboard https://github.com/89luca89/distrobox/blob/main/docs/useful_tips.md#copy-text-to-host-clipboard
 )
 distrobox-enter dev-arch -- paru -S --needed "${arch_packages[@]}"
 
@@ -81,6 +95,7 @@ arch_aur_packages=(
     # windscribe-v2-bin # vpn
 
     # Misc CLI
+    duckdb-bin
     helm-docs
     shellcheck-bin
     units
@@ -106,6 +121,9 @@ commands=(
 
     "rustup default stable"
     "sudo archlinux-java set java-21-jetbrains"
+
+    "pipx install mnamer"
+    "pipx install yt-dlp"
 
     'mkdir -p ".config/JetBrains/DataGrip$(pacman -Q datagrip | cut -d " " -f 2 | cut -c1-6)"'
     'mkdir -p ".config/JetBrains/IntelliJIdea$(pacman -Q intellij-idea-ultimate-edition | cut -d " " -f 2 | cut -c1-6)"'
