@@ -17,6 +17,9 @@ mkdir -p ~/.local/bin ~/.local/state # XDG Base Directory Specification
 
 # Install fzf
 ~/.config/zsh-addons/fzf/install --xdg --bin
+if [ ! -f ~/.local/bin/fzf ]; then
+  ln -s ~/.config/zsh-addons/fzf/bin/fzf ~/.local/bin/fzf
+fi
 
 # Potentially Manual Steps Below
 if [ ! -f ~/.ssh/id_ed25519 ]; then

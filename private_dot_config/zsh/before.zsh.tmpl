@@ -1,6 +1,11 @@
 export VAULT_ADDR={{ .vaultAddr | quote}}
 
 {{ if eq .chezmoi.os "darwin" -}}
+export XDG_CONFIG_HOME="$HOME/.config"
+export XDG_CACHE_HOME="$HOME/.cache"
+export XDG_DATA_HOME="$HOME/.local/share"
+export XDG_STATE_HOME="$HOME/.local/state"
+
 source $XDG_CONFIG_HOME/zsh-addons/iterm2-shell-integration.zsh
 
 # Use some GNU utils instead of the default BSD ones
@@ -21,19 +26,6 @@ bindkey "^[[1;5D" backward-word
 # Alt+Left & Right Arrow
 bindkey "^[[1;3C" forward-word
 bindkey "^[[1;3D" backward-word
-
-# Linuxbrew (Not using 'brew shellenv' as want OS utils preferred)
-if [[ -d /home/linuxbrew/.linuxbrew ]]; then
-  export HOMEBREW_PREFIX="/home/linuxbrew/.linuxbrew"
-  export HOMEBREW_CELLAR="/home/linuxbrew/.linuxbrew/Cellar"
-  export HOMEBREW_REPOSITORY="/home/linuxbrew/.linuxbrew/Homebrew"
-  export MANPATH="${MANPATH}/home/linuxbrew/.linuxbrew/share/man:"
-  export INFOPATH="${INFOPATH:-}/home/linuxbrew/.linuxbrew/share/info:"
-  path+=(
-    /home/linuxbrew/.linuxbrew/bin
-    /home/linuxbrew/.linuxbrew/sbin
-  )
-fi
 {{ end -}}
 
 {{ if eq .ownerType "personal" -}}

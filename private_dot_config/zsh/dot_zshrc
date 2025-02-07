@@ -1,9 +1,5 @@
-export XDG_CONFIG_HOME="$HOME/.config"
-export XDG_CACHE_HOME="$HOME/.cache"
-export XDG_DATA_HOME="$HOME/.local/share"
-export XDG_STATE_HOME="$HOME/.local/state"
-
 source $ZDOTDIR/before.zsh
+source $ZDOTDIR/envvars.zsh
 
 # Aliases
 alias kgc="kubectl config current-context"
@@ -14,23 +10,6 @@ alias grepr="rg"
 alias password="pwgen -s 32 1"
 alias rgrep="rg"
 alias cloc="tokei"
-
-# Default Environment Variables
-export CLICOLOR=1
-export LSCOLORS="gxBxhxDxfxhxhxhxhxcxcx" # For black background
-export EDITOR="/usr/bin/nano"
-export VISUAL="/usr/bin/nano"
-
-# Override some default paths
-export AZURE_CONFIG_DIR="$XDG_CONFIG_HOME/azure"
-export GOPATH="$HOME/Code/go"
-export K9SCONFIG="$XDG_CONFIG_HOME"/k9s
-export NODE_REPL_HISTORY="$XDG_DATA_HOME"/node_repl_history
-export PSQL_HISTORY="$XDG_STATE_HOME/psql_history"
-export SQLITE_HISTORY="$XDG_DATA_HOME/sqlite_history"
-
-# App-specific Environment Variables
-export FNM_COREPACK_ENABLED=true
 
 # Path
 # path=('' $path) # Before
@@ -66,8 +45,7 @@ source $XDG_CONFIG_HOME/zsh-addons/powerlevel10k/powerlevel10k.zsh-theme
 source $XDG_CONFIG_HOME/zsh/p10k-config.zsh
 
 # fzf
-source $XDG_CONFIG_HOME/zsh-addons/fzf/shell/completion.zsh
-source $XDG_CONFIG_HOME/zsh-addons/fzf/shell/key-bindings.zsh
+source <(fzf --zsh)
 
 # fnm - node version manager
 # being quiet as otherwise when you start a new shell within a node project
