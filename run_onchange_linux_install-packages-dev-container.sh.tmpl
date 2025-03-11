@@ -44,6 +44,13 @@ arch_packages=(
     rocm-hip-runtime
     rocm-opencl-runtime
 
+    # Kubernetes Tooling
+    cilium-cli
+    k9s
+    kubectl
+    opentofu
+    talosctl
+
     # Misc
     7zip
     android-tools
@@ -58,11 +65,8 @@ arch_packages=(
     htop
     httpie
     imagemagick
-    k9s
-    kubectl
     mediainfo
     neovim
-    opentofu
     pwgen
     qpdf
     ripgrep
@@ -106,6 +110,7 @@ distrobox-enter dev-arch -- paru -S --needed "${arch_aur_packages[@]}"
 echo "Configuring Packages..."
 commands=(
     "sudo ln -s /usr/bin/distrobox-host-exec /usr/bin/podman || true"
+    "sudo ln -s /usr/bin/distrobox-host-exec /usr/bin/podman-compose || true"
     "distrobox-export --app code"
     # "distrobox-export --app code-url-handler"
     "distrobox-export --app nvim"
