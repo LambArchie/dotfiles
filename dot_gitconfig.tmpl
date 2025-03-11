@@ -1,22 +1,43 @@
 [user]
 	name = Archie Lamb
 	email = {{ .email }}
+	signingkey = {{ .chezmoi.homeDir }}/.ssh/id_ed25519.pub
 
 [core]
 	excludesfile = ~/.config/git/gitignore
 
-[diff]
-	tool = vscode
+[column]
+	ui = auto
+
+[init]
+	defaultBranch = main
 
 [fetch]
 	prune = true
 	pruneTags = true
 
-[init]
-	defaultBranch = main
-
 [pull]
 	rebase = false
+
+[branch]
+	sort = -committerdate
+
+[tag]
+	sort = version:refname
+
+[gpg]
+	format = ssh
+
+[commit]
+	gpgSign = true
+	verbose = true
+
+[diff]
+	tool = vscode
+	algorithm = histogram
+	colorMoved = plain
+	mnemonicPrefix = true
+	renames = true
 
 [difftool "vscode"]
 	cmd = code --wait --diff $LOCAL $REMOTE
