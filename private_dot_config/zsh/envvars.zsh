@@ -22,3 +22,4 @@ export PSQL_HISTORY="$XDG_STATE_HOME/psql_history"
 # App-specific Environment Variables
 export GOPATH="$HOME/Code/go"
 export FNM_COREPACK_ENABLED=true
+export TALOSCONFIG="$XDG_CONFIG_HOME/talos/config.yml"

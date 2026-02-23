@@ -10,8 +10,36 @@ if [[ "$(echo -n 'Recreate Dev Container? [y/N]> ' >&2; read; echo $REPLY)" == [
     distrobox-rm --yes dev-arch || true
 fi
 
-distrobox-create --yes --pull --image "ghcr.io/ublue-os/arch-distrobox" --name "dev-arch" --volume "/:/host" || true
+# Using --init & systemd since it's useful to be able to run services within the dev container (e.g. postgresql)
+distrobox-create --yes --pull --image "quay.io/toolbx/arch-toolbox" --name "dev-arch" --init --additional-packages "systemd" || true
 
+echo "Base Arch Setup"
+distrobox enter dev-arch -- sudo bash -c '
+    sed -i "s/#Color/Color/g" /etc/pacman.conf
+    sed -i "s/#MAKEFLAGS=\"-j2\"/MAKEFLAGS=\"-j$(nproc)\"/g" /etc/makepkg.conf
+    sed -i "s/-march=x86-64 -mtune=generic/-march=native -mtune=native/g" /etc/makepkg.conf
+'
+
+distrobox enter dev-arch -- bash -c '
+    if ! command -v paru &> /dev/null; then
+        echo "paru command not found. Setting up..."
+        mkdir -p ~/Code
+
+        if [ -d ~/Code/paru ]; then
+            echo "Directory exists, pulling latest changes..."
+            cd ~/Code/paru
+            git pull
+        else
+            echo "Cloning paru repository..."
+            git clone https://aur.archlinux.org/paru.git --single-branch ~/Code/paru
+            cd ~/Code/paru
+        fi
+
+        makepkg -si --noconfirm
+    else
+        echo "paru is already installed and ready to go! Skipping."
+    fi
+'
 echo "Installing Arch Packages..."
 arch_packages=(
     # Core Tools
@@ -28,6 +56,7 @@ arch_packages=(
     python
     rustup # Rust Version Manager
     # Databases
+    duckdb
     postgresql
     sqlite
     # Programming Utilities
@@ -41,8 +70,8 @@ arch_packages=(
     ruby-stdlib
 
     # AMD GPU
-    rocm-hip-runtime
-    rocm-opencl-runtime
+    # rocm-hip-runtime
+    # rocm-opencl-runtime
 
     # Kubernetes Tooling
     cilium-cli
@@ -67,6 +96,7 @@ arch_packages=(
     imagemagick
     mediainfo
     neovim
+    pacman-contrib
     pwgen
     qpdf
     ripgrep
@@ -76,11 +106,12 @@ arch_packages=(
     tokei # cloc alternative
     tldr
     tmux
+    whois
     wget
-    wlroots # clipboard https://github.com/89luca89/distrobox/blob/main/docs/useful_tips.md#copy-text-to-host-clipboard
     xsel # clipboard https://github.com/89luca89/distrobox/blob/main/docs/useful_tips.md#copy-text-to-host-clipboard
 )
-distrobox-enter dev-arch -- paru -S --needed "${arch_packages[@]}"
+distrobox-enter dev-arch -- paru -R --noconfirm rust || true # Replacing with rustup
+distrobox-enter dev-arch -- paru -S --noconfirm --needed "${arch_packages[@]}"
 
 echo "Installing Arch AUR Packages..."
 arch_aur_packages=(
@@ -92,14 +123,13 @@ arch_aur_packages=(
     # GUI Apps
     visual-studio-code-bin
     datagrip # JetBrains DB
-    intellij-idea-ultimate-edition # JetBrains Java IDE
+    # intellij-idea-ultimate-edition # JetBrains Java IDE
     # pycharm-professional # JetBrains Python IDE
-    rider # JetBrains .NET IDE
-    webstorm # JetBrains JavaScript IDE
+    # rider # JetBrains .NET IDE
+    # webstorm # JetBrains JavaScript IDE
     # windscribe-v2-bin # vpn
 
     # Misc CLI
-    duckdb-bin
     helm-docs
     shellcheck-bin
     units
@@ -111,17 +141,26 @@ echo "Configuring Packages..."
 commands=(
     "sudo ln -s /usr/bin/distrobox-host-exec /usr/bin/podman || true"
     "sudo ln -s /usr/bin/distrobox-host-exec /usr/bin/podman-compose || true"
+    "sudo ln -s /run/host/run/user/1000/kwallet5.socket /run/user/1000/kwallet5.socket || true"
+    "sudo ln -s /run/host/run/user/1000/ssh-agent.socket /run/user/1000/ssh-agent.socket || true"
+
+    # VSCode requires some extra environment variables to ensure it can access host secrets (for GitHub login - important for Copilot)
+    "sudo sed -i '\\@/usr/bin/env XDG_RUNTIME_DIR@! s@/usr/bin/code@/usr/bin/env XDG_RUNTIME_DIR=\"/run/host/\${XDG_RUNTIME_DIR}\" DBUS_SESSION_BUS_ADDRESS=\"unix:path=/run/host/\$(echo \"\${DBUS_SESSION_BUS_ADDRESS}\" | cut -d '\\''='\\'' -f2-)\" /usr/bin/code@g' /usr/share/applications/code.desktop"
+    "sudo sed -i '\\@/usr/bin/env XDG_RUNTIME_DIR@! s@/usr/bin/code@/usr/bin/env XDG_RUNTIME_DIR=\"/run/host/\${XDG_RUNTIME_DIR}\" DBUS_SESSION_BUS_ADDRESS=\"unix:path=/run/host/\$(echo \"\${DBUS_SESSION_BUS_ADDRESS}\" | cut -d '\\''='\\'' -f2-)\" /usr/bin/code@g' /usr/share/applications/code-url-handler.desktop"
+
+    # code-url-handler is automatically included when exporting code
     "distrobox-export --app code"
-    # "distrobox-export --app code-url-handler"
     "distrobox-export --app nvim"
     "distrobox-export --app datagrip"
-    "distrobox-export --app intellij-idea-ultimate-edition"
-    "distrobox-export --app rider"
-    "distrobox-export --app webstorm"
+    # "distrobox-export --app intellij-idea-ultimate-edition"
+    # "distrobox-export --app rider"
+    # "distrobox-export --app webstorm"
+    "distrobox-export --bin /usr/bin/code"
     "distrobox-export --bin /usr/bin/gh"
 
+    "sed -i '\\@/usr/bin/env XDG_RUNTIME_DIR@! s@'\\''/usr/bin/code'\\''@/usr/bin/env XDG_RUNTIME_DIR=\"/run/host/\${XDG_RUNTIME_DIR}\" DBUS_SESSION_BUS_ADDRESS=\"unix:path=/run/host/\$(echo \"\${DBUS_SESSION_BUS_ADDRESS}\" | cut -d '\\''='\\'' -f2-)\" /usr/bin/code@g' ~/.local/bin/code"
+
     "sudo chsh -s /usr/bin/zsh $USER"
-    "sudo chsh -s /usr/bin/zsh root"
     "sudo su -l postgres -c \"initdb --locale=C.UTF-8 --encoding=UTF8 -D '/var/lib/postgres/data'\" || true"
 
     "rustup default stable"
@@ -134,10 +173,10 @@ commands=(
     'mkdir -p ".config/JetBrains/IntelliJIdea$(pacman -Q intellij-idea-ultimate-edition | cut -d " " -f 2 | cut -c1-6)"'
     'mkdir -p ".config/JetBrains/Rider$(pacman -Q rider | cut -d " " -f 2 | cut -c3-8)"'
     'mkdir -p ".config/JetBrains/WebStorm$(pacman -Q webstorm | cut -d " " -f 2 | cut -c1-6)"'
-    'echo "/usr/lib/jvm/java-21-jetbrains" >> ".config/JetBrains/DataGrip$(pacman -Q datagrip | cut -d " " -f 2 | cut -c1-6)/datagrip.jdk"'
-    'echo "/usr/lib/jvm/java-21-jetbrains" >> ".config/JetBrains/IntelliJIdea$(pacman -Q intellij-idea-ultimate-edition | cut -d " " -f 2 | cut -c1-6)/idea.jdk"'
-    'echo "/usr/lib/jvm/java-21-jetbrains" >> ".config/JetBrains/Rider$(pacman -Q rider | cut -d " " -f 2 | cut -c3-8)/rider.jdk"'
-    'echo "/usr/lib/jvm/java-21-jetbrains" >> ".config/JetBrains/WebStorm$(pacman -Q webstorm | cut -d " " -f 2 | cut -c1-6)/webstorm.jdk"'
+    'echo "/usr/lib/jvm/java-21-jetbrains" > ".config/JetBrains/DataGrip$(pacman -Q datagrip | cut -d " " -f 2 | cut -c1-6)/datagrip.jdk"'
+    # 'echo "/usr/lib/jvm/java-21-jetbrains" > ".config/JetBrains/IntelliJIdea$(pacman -Q intellij-idea-ultimate-edition | cut -d " " -f 2 | cut -c1-6)/idea.jdk"'
+    # 'echo "/usr/lib/jvm/java-21-jetbrains" > ".config/JetBrains/Rider$(pacman -Q rider | cut -d " " -f 2 | cut -c3-8)/rider.jdk"'
+    # 'echo "/usr/lib/jvm/java-21-jetbrains" > ".config/JetBrains/WebStorm$(pacman -Q webstorm | cut -d " " -f 2 | cut -c1-6)/webstorm.jdk"'
 )
 for command in "${commands[@]}"; do
     distrobox-enter dev-arch -- bash -c "$command"
