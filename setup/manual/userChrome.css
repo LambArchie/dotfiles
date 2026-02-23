@@ -1,0 +1,131 @@
+/* Compact Search-Engine selection in omnibar dropdown */
+#urlbar .search-one-offs:not([hidden]) {
+  padding-block: 2px !important;
+}
+#urlbar .search-one-offs .search-panel-header {
+  display: none !important;
+}
+
+/* Reduced menu padding */
+:root {
+  --arrowpanel-menuitem-padding: 6px !important;
+}
+/* Reduced bookmarks folder padding */
+menupopup > menuitem,
+menupopup > menu {
+  padding-block: 0.4em !important;
+}
+
+/* about:config settings
+ * browser.tabs.tabMinWidth=56
+ */
+/* Restore selected tab width to default, unless pinned */
+tab:not([pinned])[selected] {
+  min-width: 76px !important;
+}
+
+/* Reduced tab height*/
+:root {
+  --tab-min-height: 34px !important;
+}
+
+/* Hide sound label in tab bar */
+.tab-secondary-label:is(
+    [soundplaying],
+    [muted],
+    [activemedia-blocked],
+    [pictureinpicture]
+  ) {
+  display: none !important;
+}
+
+/** Sound Icon Always Show - Start **/
+/* Makes the favicons always visible (also on hover), EXCEPT when sharing (e.g. mic or screen) since that pulses */
+.tab-icon-image:not([sharing]) {
+  opacity: 1 !important;
+}
+
+/* Makes the speaker icon to always appear if the tab is playing (not only on hover) */
+.tab-icon-overlay:not([crashed]),
+.tab-icon-overlay[pinned][crashed][selected] {
+  /* Position */
+  top: -3.5px !important;
+  inset-inline-end: -9px !important;
+  z-index: 1 !important;
+
+  /* Shape */
+  padding: 1.5px !important;
+  border-radius: 10px !important;
+  width: 17px !important;
+  height: 17px !important;
+}
+.tab-icon-overlay:not([pinned], [sharing], [crashed]):is(
+    [soundplaying],
+    [muted],
+    [activemedia-blocked]
+  ) {
+  margin-inline-end: 9.5px !important;
+}
+
+/* Non-existant favicon */
+.tabbrowser-tab:not([image])
+  .tab-icon-overlay:not([pinned], [sharing], [crashed]) {
+  top: 0 !important;
+  inset-inline-end: 0 !important;
+  margin-inline-end: 5.5px !important;
+  padding: 2px 0 !important;
+}
+
+/* Busy - Show */
+.tab-throbber[busy],
+.tab-icon-pending[busy] {
+  opacity: 1 !important;
+}
+
+/* Busy - Overlay Position */
+.tabbrowser-tab:not([pinned])[busy]
+  .tab-icon-overlay:is([soundplaying], [muted], [activemedia-blocked]) {
+  transform: translateX(-0.5px) translateY(-2.5px);
+}
+.tabbrowser-tab:not([image])
+  .tab-icon-overlay:not([pinned], [sharing], [crashed])[busy] {
+  top: -3.5px !important;
+  inset-inline-end: -9px !important;
+  margin-inline-end: 9.5px !important;
+  padding: 1.5px !important;
+}
+
+/* Colour */
+.tab-icon-overlay:not([crashed]):is(
+    [soundplaying],
+    [muted],
+    [activemedia-blocked]
+  ) {
+  opacity: 1 !important;
+  background-color: transparent !important;
+  fill: var(--toolbar-color) !important;
+  fill-opacity: 0.8 !important;
+  transition: all 100ms linear !important;
+}
+
+/* Hover */
+.tab-icon-overlay:not([crashed]):is(
+    [soundplaying],
+    [muted],
+    [activemedia-blocked]
+  ):hover {
+  background-color: var(--toolbar-color) !important;
+  fill: var(--toolbar-bgcolor) !important;
+  fill-opacity: 0.95 !important;
+}
+
+.tabbrowser-tab:not([image])
+  .tab-icon-overlay:not([pinned], [sharing], [crashed]):hover {
+  padding: 0 !important;
+}
+/** Sound Icon Always Show - End **/
+
+/* Hide Block Element from Windscribe in Right Click menu */
+[id="_windscribeff-menuitem-_uBlock0-blockElement"] {
+  display: none;
+}
