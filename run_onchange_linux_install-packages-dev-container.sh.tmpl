@@ -51,6 +51,7 @@ arch_packages=(
     zsh
 
     # Programming Languages
+    ansible
     go
     ruby
     python
@@ -144,9 +145,9 @@ commands=(
     "sudo ln -s /run/host/run/user/1000/kwallet5.socket /run/user/1000/kwallet5.socket || true"
     "sudo ln -s /run/host/run/user/1000/ssh-agent.socket /run/user/1000/ssh-agent.socket || true"
 
-    # VSCode requires some extra environment variables to ensure it can access host secrets (for GitHub login - important for Copilot)
-    "sudo sed -i '\\@/usr/bin/env XDG_RUNTIME_DIR@! s@/usr/bin/code@/usr/bin/env XDG_RUNTIME_DIR=\"/run/host/\${XDG_RUNTIME_DIR}\" DBUS_SESSION_BUS_ADDRESS=\"unix:path=/run/host/\$(echo \"\${DBUS_SESSION_BUS_ADDRESS}\" | cut -d '\\''='\\'' -f2-)\" /usr/bin/code@g' /usr/share/applications/code.desktop"
-    "sudo sed -i '\\@/usr/bin/env XDG_RUNTIME_DIR@! s@/usr/bin/code@/usr/bin/env XDG_RUNTIME_DIR=\"/run/host/\${XDG_RUNTIME_DIR}\" DBUS_SESSION_BUS_ADDRESS=\"unix:path=/run/host/\$(echo \"\${DBUS_SESSION_BUS_ADDRESS}\" | cut -d '\\''='\\'' -f2-)\" /usr/bin/code@g' /usr/share/applications/code-url-handler.desktop"
+    # VSCode requires some extra environment variables to ensure it can access host secrets (for GitHub login - important for Copilot + SSH)
+    "sudo sed -i '\\@/usr/bin/env XDG_RUNTIME_DIR@! s@/usr/bin/code@/usr/bin/env XDG_RUNTIME_DIR=\"/run/host\${XDG_RUNTIME_DIR}\" SSH_AUTH_SOCK=\"/run/host\${SSH_AUTH_SOCK}\" DBUS_SESSION_BUS_ADDRESS=\"unix:path=/run/host\$(echo \"\${DBUS_SESSION_BUS_ADDRESS}\" | cut -d '\\''='\\'' -f2-)\" /usr/bin/code@g' /usr/share/applications/code.desktop"
+    "sudo sed -i '\\@/usr/bin/env XDG_RUNTIME_DIR@! s@/usr/bin/code@/usr/bin/env XDG_RUNTIME_DIR=\"/run/host\${XDG_RUNTIME_DIR}\" SSH_AUTH_SOCK=\"/run/host\${SSH_AUTH_SOCK}\" DBUS_SESSION_BUS_ADDRESS=\"unix:path=/run/host\$(echo \"\${DBUS_SESSION_BUS_ADDRESS}\" | cut -d '\\''='\\'' -f2-)\" /usr/bin/code@g' /usr/share/applications/code-url-handler.desktop"
 
     # code-url-handler is automatically included when exporting code
     "distrobox-export --app code"
@@ -158,7 +159,8 @@ commands=(
     "distrobox-export --bin /usr/bin/code"
     "distrobox-export --bin /usr/bin/gh"
 
-    "sed -i '\\@/usr/bin/env XDG_RUNTIME_DIR@! s@'\\''/usr/bin/code'\\''@/usr/bin/env XDG_RUNTIME_DIR=\"/run/host/\${XDG_RUNTIME_DIR}\" DBUS_SESSION_BUS_ADDRESS=\"unix:path=/run/host/\$(echo \"\${DBUS_SESSION_BUS_ADDRESS}\" | cut -d '\\''='\\'' -f2-)\" /usr/bin/code@g' ~/.local/bin/code"
+    # Much more complex of the VSCode fix above since we need to skip them if they have already happened (e.g. you are in VSCode's terminal)
+    "perl -i -pe 'if (\$. == 5) { \$_ = \"        exec \\\"/usr/bin/distrobox-enter\\\"  -n dev-arch  --  /usr/bin/env XDG_RUNTIME_DIR=\\\"/run/host\\\${XDG_RUNTIME_DIR}\\\" SSH_AUTH_SOCK=\\\"/run/host\\\${SSH_AUTH_SOCK}\\\" DBUS_SESSION_BUS_ADDRESS=\\\"unix:path=/run/host\\\$(echo \\\"\\\${DBUS_SESSION_BUS_ADDRESS}\\\" | cut -d '\\''='\\'' -f2-)\\\" /usr/bin/code \\\"\\\$@\\\"\\n\" } elsif (\$. == 9) { \$_ = \"        [[ \\\"\\\${XDG_RUNTIME_DIR}\\\" == *\\\"/run/host\\\"* ]] && exec /usr/bin/code \\\"\\\$@\\\" || exec /usr/bin/env XDG_RUNTIME_DIR=\\\"/run/host\\\${XDG_RUNTIME_DIR}\\\" SSH_AUTH_SOCK=\\\"/run/host\\\${SSH_AUTH_SOCK}\\\" DBUS_SESSION_BUS_ADDRESS=\\\"unix:path=/run/host\\\$(echo \\\"\\\${DBUS_SESSION_BUS_ADDRESS}\\\" | cut -d '\\''='\\'' -f2-)\\\" /usr/bin/code \\\"\\\$@\\\"\\n\" }' ~/.local/bin/code"
 
     "sudo chsh -s /usr/bin/zsh $USER"
     "sudo su -l postgres -c \"initdb --locale=C.UTF-8 --encoding=UTF8 -D '/var/lib/postgres/data'\" || true"
@@ -181,6 +183,13 @@ commands=(
 for command in "${commands[@]}"; do
     distrobox-enter dev-arch -- bash -c "$command"
 done
+
+if ! grep -q 'if \[ "\$CONTAINER_ID" == "dev-arch" \] && \[ -z "\$SKIP_ZSH_FORCE" \]; then exec /usr/bin/env SSH_AUTH_SOCK="/run/host${SSH_AUTH_SOCK}" /usr/bin/zsh -l; fi' ~/.bashrc; then
+    echo "Setting up bash automatic redirect to zsh..."
+    echo 'if [ "$CONTAINER_ID" == "dev-arch" ] && [ -z "$SKIP_ZSH_FORCE" ]; then exec /usr/bin/env SSH_AUTH_SOCK="/run/host${SSH_AUTH_SOCK}" /usr/bin/zsh -l; fi' >> ~/.bashrc
+else
+    echo "Automatic redirect to zsh already set up, skipping..."
+fi
 
 {{ else -}}
 echo "Not recognised OS, purposefully failling"
