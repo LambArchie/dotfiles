@@ -1,0 +1,111 @@
+{
+  "$schema": "https://json.schemastore.org/claude-code-settings.json",
+  "enabledPlugins": {
+    "code-review@claude-plugins-official": true,
+    "pr-review-toolkit@claude-plugins-official": true
+  },
+  "effortLevel": "high",
+  "permissions": {
+    "allow": [
+      "Bash(ls *)",
+      "Bash(grep:*)",
+      "Bash(grep *)",
+      "Bash(find *)",
+      "Bash(cat *)",
+      "Bash(head *)",
+      "Bash(tail *)",
+      "Bash(less *)",
+      "Bash(more *)",
+      "Bash(pwd)",
+      "Bash(jq *)",
+
+      "Bash(gh pr diff *)",
+      "Bash(gh pr view *)",
+      "Bash(git diff *)",
+      "Bash(git show *)",
+      "Bash(yarn lint *)",
+
+      "Edit(~/Code/**)"
+    ],
+    "ask": [
+      "Bash(git push --force*)",
+      "Bash(git push *--force*)",
+      "Bash(*/.config/**)",
+
+      "Edit(**/node_modules/**)",
+
+      "Read(~/.config/**)"
+    ],
+    "deny": [
+      "Bash(rm -r*)",
+      "Bash(rm -f*)",
+      "Bash(rm --force*)",
+      "Bash(rm --recursive*)",
+      "Bash(sudo *)",
+      "Bash(su *)",
+      "Bash(mkfs *)",
+      "Bash(dd *)",
+      "Bash(wget *bash*)",
+      "Bash(wget *sh*)",
+      "Bash(wget *zsh*)",
+      "Bash(curl *bash*)",
+      "Bash(curl *sh*)",
+      "Bash(curl *zsh*)",
+      "Bash(git *reset *--hard*)",
+      "Bash(git *reset *--merge*)",
+      "Bash(git stash drop*)",
+      "Bash(git stash clear*)",
+      "Bash(git branch -D*)",
+      "Bash(git clean*)",
+      "Bash(*.env)",
+      "Bash(*.env*)",
+      "Bash(*/.ssh/*)",
+      "Bash(*/.gnupg/*)",
+      "Bash(*/.aws/*)",
+      "Bash(*/.azure/*)",
+      "Bash(*/.config/gh/*)",
+      "Bash(*/.git-credentials)",
+      "Bash(*/.docker/config.json)",
+      "Bash(*/.kube/*)",
+      "Bash(*/.npmrc)",
+      "Bash(*/.npm/*)",
+      "Bash(*/.pypirc)",
+      "Bash(*/.gem/credentials)",
+      "Bash(*/Library/Keychains/*)",
+      "Bash(*/Library/Application Support/**/metamask/*)",
+      "Bash(*/Library/Application Support/**/electrum/*)",
+      "Bash(*/Library/Application Support/**/exodus/*)",
+      "Bash(*/Library/Application Support/**/phantom/*)",
+      "Bash(*/Library/Application Support/**/solflare/*)",
+
+      "Edit(~/.bashrc)",
+      "Edit(~/.zshrc)",
+      "Edit(~/.ssh/**)",
+
+      "Read(*.env)",
+      "Read(*.env*)",
+      "Read(~/.ssh/**)",
+      "Read(~/.gnupg/**)",
+      "Read(~/.aws/**)",
+      "Read(~/.azure/**)",
+      "Read(~/.config/gh/**)",
+      "Read(~/.git-credentials)",
+      "Read(~/.docker/config.json)",
+      "Read(~/.kube/**)",
+      "Read(~/.npmrc)",
+      "Read(~/.npm/**)",
+      "Read(~/.pypirc)",
+      "Read(~/.gem/credentials)",
+      "Read(~/Library/Keychains/**)",
+      "Read(~/Library/Application Support/**/metamask*/**)",
+      "Read(~/Library/Application Support/**/electrum*/**)",
+      "Read(~/Library/Application Support/**/exodus*/**)",
+      "Read(~/Library/Application Support/**/phantom*/**)",
+      "Read(~/Library/Application Support/**/solflare*/**)"
+    ]
+  },
+  "statusLine": {
+    "type": "command",
+    "command": "~/.local/bin/claude-code-statusline.sh"
+  }
+}
