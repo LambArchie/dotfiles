@@ -13,5 +13,7 @@ defaults write com.apple.dock largesize -int 72
 # Apply changes
 killall Dock
 
+defaults write com.googlecode.iterm2 PrefsCustomFolder -string "$HOME/.local/share/chezmoi/setup/mac"
+
 echo "Mac - Configure - End"
 {{ end -}}

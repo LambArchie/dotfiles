@@ -1,9 +1,5 @@
-# Terraform
-brew "checkov"
-brew "terraform"
-brew "terraform-docs"
-brew "tflint"
-brew "tfsec"
+# Terraform/OpenTofu
+brew "opentofu"
 
 # AWS
 brew "awscli"
@@ -15,14 +11,18 @@ brew "colima"
 brew "docker"
 brew "docker-buildx"
 
+# AI
+cask "claude"
+cask "claude-code@latest"
+
 # GUI Apps
 cask "1password"
 cask "1password-cli"
-cask "linear-linear"
+cask "linear"
 cask "notion"
 cask "notion-calendar"
 cask "slack"
-cask "tailscale"
+cask "tailscale-app"
 mas "1Password for Safari", id: 1569813296
 
 # Programming Languages
@@ -30,5 +30,7 @@ brew "postgis"
 brew "rbenv"
 
 # Misc
+brew "rabbitmq"
+brew "rabbitmqadmin"
 tap "f1bonacc1/tap"
 brew "f1bonacc1/tap/process-compose"
