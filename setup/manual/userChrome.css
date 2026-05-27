@@ -126,6 +126,6 @@ tab:not([pinned])[selected] {
 /** Sound Icon Always Show - End **/
 
 /* Hide Block Element from Windscribe in Right Click menu */
-[id="_windscribeff-menuitem-_uBlock0-blockElement"] {
+[id="_windscribeff-menuitem-2"] {
   display: none;
 }

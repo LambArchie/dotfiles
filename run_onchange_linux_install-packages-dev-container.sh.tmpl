@@ -140,6 +140,7 @@ distrobox-enter dev-arch -- paru -S --needed "${arch_aur_packages[@]}"
 
 echo "Configuring Packages..."
 commands=(
+    "sudo ln -s /usr/bin/distrobox-host-exec /usr/bin/kde-open || true"
     "sudo ln -s /usr/bin/distrobox-host-exec /usr/bin/podman || true"
     "sudo ln -s /usr/bin/distrobox-host-exec /usr/bin/podman-compose || true"
     "sudo ln -s /run/host/run/user/1000/kwallet5.socket /run/user/1000/kwallet5.socket || true"
