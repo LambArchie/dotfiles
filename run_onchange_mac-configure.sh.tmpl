@@ -15,5 +15,9 @@ killall Dock
 
 defaults write com.googlecode.iterm2 PrefsCustomFolder -string "$HOME/.local/share/chezmoi/setup/mac"
 
+# Disable display brightness hotkeys
+/usr/libexec/PlistBuddy -c "Set :AppleSymbolicHotKeys:53:enabled false" ~/Library/Preferences/com.apple.symbolichotkeys.plist
+/usr/libexec/PlistBuddy -c "Set :AppleSymbolicHotKeys:54:enabled false" ~/Library/Preferences/com.apple.symbolichotkeys.plist
+
 echo "Mac - Configure - End"
 {{ end -}}

@@ -47,6 +47,7 @@ brew "tldr"
 brew "tokei"
 brew "wget"
 brew "yq"
+brew "zizmor"
 
 # Standard casks
 cask "alt-tab"
@@ -69,6 +70,7 @@ cask "obs"
 cask "safari-technology-preview"
 cask "spotify"
 cask "visual-studio-code"
+cask "windows-app" # RDP client
 
 # Misc
 ## Fonts
@@ -82,10 +84,6 @@ cask "font-open-sans"
 cask "font-roboto"
 cask "font-source-code-pro"
 cask "font-ubuntu"
-
-# Custom taps
-tap "helm/tap"
-brew "helm/tap/chart-releaser"
 
 # Mac App Store
 mas "Bitwarden", id: 1352778147

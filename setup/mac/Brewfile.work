@@ -32,5 +32,3 @@ brew "rbenv"
 # Misc
 brew "rabbitmq"
 brew "rabbitmqadmin"
-tap "f1bonacc1/tap"
-brew "f1bonacc1/tap/process-compose"

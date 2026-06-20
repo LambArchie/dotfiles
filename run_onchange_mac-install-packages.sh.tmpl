@@ -11,6 +11,12 @@ brew bundle --file={{ joinPath .chezmoi.sourceDir "setup/mac/Brewfile" }}
 brew bundle --file={{ joinPath .chezmoi.sourceDir "setup/mac/Brewfile.work" }}
 {{ end -}}
 
+# Create Docker config so buildx works if
+if [ ! -f ~/.docker/config.json ] && [ -d "$HOMEBREW_PREFIX/lib/docker/cli-plugins" ]; then
+  mkdir -p ~/.docker
+  jq -n --arg prefix "$HOMEBREW_PREFIX" '{"auths": {}, "cliPluginsExtraDirs": ["\($prefix)/lib/docker/cli-plugins"]}' > ~/.docker/config.json
+fi
+
 # Create the Applications directory if it doesn't exist
 mkdir -p ~/Applications
 
