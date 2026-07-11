@@ -1,0 +1,96 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+for cmd in pw-dump jq wpctl; do
+	if ! command -v "$cmd" >/dev/null 2>&1; then
+		echo "$cmd not found — this script requires PipeWire/WirePlumber (Linux only)" >&2
+		exit 1
+	fi
+done
+
+# Run via a hotkey (bound to a knob), so stdout/stderr are invisible — surface
+# status as a desktop notification instead. Best-effort: skip silently if
+# notify-send is absent.
+#
+# The knob fires this rapidly, so avoid a stack of popups: reuse one bubble by
+# replacing it (-r <id>; -p prints the id assigned) and auto-dismiss it (-t).
+#
+# The catch on KDE: replacing an id whose bubble has already expired is a silent
+# no-op, so we can only reuse the stashed id while it's still on screen. We stash
+# id + timestamp and only replace if the last one was shown a moment ago (still
+# up, mid-spin); otherwise pass 0 to start a fresh bubble.
+notify() {
+	command -v notify-send >/dev/null 2>&1 || return 0
+	local statefile="${XDG_RUNTIME_DIR:-/tmp}/spotify-volume.notify"
+	local now replace=0 last_id=0 last_ts=0 id
+	now=$(date +%s%3N)
+	if [[ -r $statefile ]]; then
+		read -r last_id last_ts <"$statefile" || true
+		if ((now - last_ts < 1200)); then
+			replace=$last_id
+		fi
+	fi
+	id=$(notify-send -p -t 1500 -r "$replace" \
+		-a Spotify -c "x-spotify.volume" "$@") || return 0
+	printf '%s %s' "$id" "$now" >"$statefile"
+}
+
+# Current volume of a node as a whole-number percentage.
+node_volume_pct() { wpctl get-volume "$1" | awk '{printf "%.0f", $2 * 100}'; }
+
+case "${1:-}" in
+	up) direction="+" ;;
+	down) direction="-" ;;
+	*)
+		echo "Usage: $0 <up|down>" >&2
+		exit 1
+		;;
+esac
+
+# Find Spotify's playback node(s). The Spotify identity (flatpak portal app_id,
+# application.name) lives on the PipeWire *client* object, not the node — the
+# node only carries a client.id pointer. So first collect the ids of Spotify
+# clients, then pick the output nodes belonging to them.
+#
+# mapfile -t reads jq's line-per-id output into an array, so the count check
+# and loop below handle multiple matches cleanly.
+mapfile -t node_ids < <(pw-dump | jq '
+	[ .[]
+	  | select(.type=="PipeWire:Interface:Client")
+	  | select(
+	      .info.props."pipewire.access.portal.app_id"=="com.spotify.Client" # flatpak build
+	      or .info.props."application.name"=="Spotify"                      # fallback / native build
+	    )
+	  | .id
+	] as $spotify_clients
+	| .[]
+	| select(.type=="PipeWire:Interface:Node")
+	| select(.info.props."media.class"=="Stream/Output/Audio")   # playback streams only
+	| select(.info.params.Props[0].volume != null)               # must expose a volume for wpctl
+	| select(.info.props."client.id" as $c | $spotify_clients | index($c))
+	| .id
+')
+
+if [[ ${#node_ids[@]} -eq 0 ]]; then
+	echo "Spotify node not found" >&2
+	notify "Spotify" "Not playing — no audio stream found"
+	exit 1
+fi
+
+# Track the representative node's level across the change so we can tell when an
+# "up" press did nothing because we're already at the 150% ceiling.
+before=$(node_volume_pct "${node_ids[0]}")
+for node_id in "${node_ids[@]}"; do
+	wpctl set-volume --limit 1.5 "$node_id" "0.05${direction}"
+done
+pct=$(node_volume_pct "${node_ids[0]}")
+
+# Report the result. The usual single-stream case gets a progress bar; with
+# multiple streams a single bar would be misleading, so just note the change.
+if [[ $direction == "+" && $pct -le $before ]]; then
+	notify "Spotify" "Volume capped at 150%"
+elif [[ ${#node_ids[@]} -eq 1 ]]; then
+	notify -h "int:value:${pct}" "Spotify" "Volume ${pct}%"
+else
+	notify "Spotify" "Multiple clients — ${1} changed by 5%"
+fi
